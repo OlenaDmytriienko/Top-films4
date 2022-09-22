@@ -204,14 +204,26 @@ width: 100%;
     cursor: pointer;
     transition: width height 1s;
     z-index:1 ;
+    stroke-opacity:1;
   }
-  &__svg:hover {
+  &__svg--white:hover {
     stroke: #EE204D;
     fill:#EE204D ;
     cursor: pointer;
   }
+  &__svg--white {
+    stroke: white;
+    fill: white;
+  }
+  &__svg--red {
+    stroke: #EE204D;
+    fill:#EE204D ;
+  }
+  &__svg--red:hover {
+    stroke: white;
+    fill:#EE204D ;
+  }
 }
-
 #myImg {
   cursor: pointer;
   transition: 0.3s;
@@ -445,7 +457,7 @@ h4 {
     width: 100vw;
   }
   .movie__cover-inner{
-    width: 100vw;
+    // width: 100vw;
     margin: 0 auto;
   }
   .movie__cover--darkened {
