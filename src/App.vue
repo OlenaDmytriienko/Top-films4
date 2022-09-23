@@ -12,11 +12,11 @@ import img from '@/assets/cinema.png'
       <div class="header header-content">
         <a href="./index.html" class="header__logo">Top Films</a>
          <select name="" id="year1" class="header__year1 action" v-model="simbolYearFrom" @change="onChangeYearFrom($event)">
-           <option value=""></option>
+           <!-- <option value=""></option> -->
            <option v-for="n in 100" v-bind:value="n+1922" v-bind:key="n+1922">{{n+1922}}</option>
         </select>
         <select name="" id="year" class="header__year action" v-model="simbolYear" @change="onChangeYear($event)">
-           <option value=""></option>
+           <!-- <option value=""></option> -->
           <option value="RATING">По рейтингу</option>
           <option value="YEAR">По году</option>
         </select>
@@ -38,11 +38,11 @@ import img from '@/assets/cinema.png'
       <div class="container today"> 
       <div class="movie__today">
        <div class="movie1"> 
-            <img :src="restaurant.posterUrlPreview" :alt="restaurant.nameRu" class="movie__cover1" />
+            <img :src="restaurant?.posterUrlPreview" :alt="restaurant?.nameRu ?? 'wtf' " class="movie__cover1" />
           <div class="movie__info">
-            <div class="movie__t">{{restaurant.nameRu}}  </div>
-            <p class="modal__year"> {{restaurant.year}} </p>
-          <div class="movie__c" v-for="(genre) in restaurant.genres" v-bind:key="genre.genre"> {{ genre.genre }}</div>
+            <div class="movie__t">{{restaurant?.nameRu}}  </div>
+            <p class="modal__year"> {{restaurant?.year}} </p>
+          <div class="movie__c" v-for="(genre) in restaurant?.genres" v-bind:key="genre?.genre"> {{ genre?.genre }}</div>
 
         </div>
 </div>
@@ -87,13 +87,13 @@ import img from '@/assets/cinema.png'
          v-on:click="visible=false"
         >&times;</span>
         <div class="modal__container">
-      <img class="modal-content" id="img01" :src="modalRestaurant.posterUrlPreview" :alt="modalRestaurant.nameOriginal"/>
+      <img class="modal-content" id="img01" :src="modalRestaurant?.posterUrlPreview" :alt="modalRestaurant?.nameOriginal"/>
       <div class="modal__box"> 
-      <h4 class="modal__title"> {{modalRestaurant.nameOriginal}}</h4>
-      <h5 class="modal__genre" v-for="(genre) in modalRestaurant.genres" v-bind:key="genre"> {{ genre.genre }} </h5>
-      <p class="modal__year"> {{ modalRestaurant.year}} </p>
-      <div class="modal__text"> {{modalRestaurant.description}} </div>
-      <p class="modal__pg"> {{modalRestaurant.ratingAgeLimits}} </p></div>
+      <h4 class="modal__title"> {{modalRestaurant?.nameOriginal}}</h4>
+      <h5 class="modal__genre" v-for="(genre) in modalRestaurant?.genres" v-bind:key="genre"> {{ genre?.genre }} </h5>
+      <p class="modal__year"> {{ modalRestaurant?.year}} </p>
+      <div class="modal__text"> {{modalRestaurant?.description}} </div>
+      <p class="modal__pg"> {{modalRestaurant?.ratingAgeLimits}} </p></div>
     </div>
     </div> <div class="loading__box">
        <span  v-show="loading"> 
@@ -120,13 +120,18 @@ import img from '@/assets/cinema.png'
 <script>
 export default {
   name: 'App',
-  data () {
+ setup: () => ({
+    simbol: (''),
+    simbolYear: (''),
+    simbolYearFrom: (''),
+  }),
+ data () {
     return {
       api: 'https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS',
       out: '',
-      simbol: '',
-      simbolYear: '',
-      simbolYearFrom: '',
+      // simbol: [''],
+      // simbolYear: [''],
+      // simbolYearFrom: [''],
       form:{searchQuery:""},
       searchQuery: '',
       page: 1,
@@ -150,7 +155,7 @@ export default {
       visible: false,
       loading:false,
       loading1:false,
-      headers: {'Content-Type': 'application/json', "X-API-KEY": '8c8e1a50-6322-4135-8875-5d40a5420d86'},
+      headers: {'Content-Type': 'application/json', "X-API-KEY": '1795da22-8040-4bf3-9891-a3d9a55cfee9'},
       likedFilmIds: [],
     }
   },
@@ -317,8 +322,9 @@ export default {
            this.SerchFilms(event.target.value)
 },
             Like(filmId) {
-            this.likedFilmIds.push(filmId);
-            
+            if(filmId != undefined) {
+             this.likedFilmIds.push(filmId);   
+            }
            console.log(filmId);
 },
             disLike(filmId) {
