@@ -99,8 +99,17 @@ import img from '@/assets/cinema.png'
        <span  v-show="loading"> 
           <img class="loading" :src="gif" alt="loading">
            </span></div>
-    <button class="next__page" @click="popular()"> <span @click="AP()">Show more</span></button>
+    <button class="next__page" @click="popular()"> <span >Show more</span></button>
+<div class="pagination">
+    <!-- <option v-for="n in 100" v-bind:value="n+1922" v-bind:key="n+1922">{{n+1922}}</option> -->
+ <button v-for="n in 2" :class="{btnhover: page ==(n + page -5 )}" v-bind:value="(n + page -5 )" v-bind:key="(n + page -5)" @click=" paginationBtnClick((n + page -5 ))" v-show="(n+page-5) >= (pageCount-4) && (n+page-5) <= (pageCount-3)" class="btn">{{(n + page -5 )}}</button>
 
+  <button v-for="n in pagePaginationCount" :class="{btnhover: page ==(n + page - 3 )}" v-bind:value="(n + page - 3 )" v-bind:key="(n + page - 3 )" @click=" paginationBtnClick((n + page - 3 ))" v-show="(n+page-3) >= 1 && (n+page-3) <= pageCount" class="btn">{{(n + page - 3 )}}</button>
+
+  <button v-for="n in 2" :class="{btnhover: page ==(n + page + 2 )}" v-bind:value="(n + page + 2 )" v-bind:key="(n + page + 2 )" @click=" paginationBtnClick((n + page + 2 ))" v-show="(n+page+2) >= 4 && (n+page+2) <= 5" class="btn">{{(n + page + 2 )}}</button>
+
+
+</div>
 
 
 </template>
@@ -122,6 +131,9 @@ export default {
       searchQuery: '',
       page: 1,
       pageString: '&page=',
+      pageCount: 0,
+      pagePaginationCount: 0,
+      keepOldObj: true,
       order:'',
       orderString: 'order=',
       genres: '',
@@ -138,7 +150,7 @@ export default {
       visible: false,
       loading:false,
       loading1:false,
-      headers: {'Content-Type': 'application/json', "X-API-KEY": '236d1c9c-2de0-4ab3-a57f-f871ba0334a2'},
+      headers: {'Content-Type': 'application/json', "X-API-KEY": '8c8e1a50-6322-4135-8875-5d40a5420d86'},
       likedFilmIds: [],
     }
   },
@@ -202,13 +214,15 @@ export default {
           headers: this.headers,
         }).then(this.checkStatus)
             .then(this.parseJSON);
-            
         console.log(response)
-        if (this.page == 1) {
-          this.restaurants = response.films} 
+        if (this.page == 1 || !this.keepOldObj) {
+          this.restaurants = response.films;
+          this.keepOldObj = true;
+          } 
           else {
             this.restaurants = this.restaurants.concat(response.films)
           }
+          this.pageCount = response.pagesCount;
          this.loading=false;
 
       } catch (error) {
@@ -238,11 +252,14 @@ export default {
         }).then(this.checkStatus)
             .then(this.parseJSON);
         console.log(response)
-       if (this.page == 1) {
-          this.restaurants = response.items} 
+       if (this.page == 1 || this.keepOldObj != true) {
+          this.restaurants = response.items
+           this.keepOldObj = true;
+           } 
           else {
             this.restaurants = this.restaurants.concat(response.items)
           }
+          this.pageCount = response.totalPages;
           this.loading=false;
           this.loading1 = false;
       } catch (error) {
@@ -282,6 +299,16 @@ export default {
             this.yearFrom = event.target.value;
            this.FilterGenres()
            this.loading1 = true;
+        },
+       async paginationBtnClick(page){
+        
+        this.keepOldObj = false;
+         this.page = page;
+      if(this.apiArray.length === 0 ) {
+        await this.filter(this.api + this.pageString + this.page.toString())
+      } else {
+           await this.filterGenres(this.api + this.pageString + this.page.toString())
+      }
         },
           searchValue(event) {
             this.searchQuery = event.target.value
@@ -329,6 +356,7 @@ return  this.restaurants[index]?.nameRu ?? ' '
           .then(this.parseJSON);
       console.log(response)
 console.log(Math.floor(Math.random() * (100 - 0 + 1)) + 1);
+      this.pageCount = response.pagesCount;
       this.restaurants = response.films
       this.restaurant = response.films[Math.floor(Math.random() * (20 - 1 + 1)) + 1]
       // console.log();
@@ -342,15 +370,18 @@ console.log(Math.floor(Math.random() * (100 - 0 + 1)) + 1);
    watch: {
     likedFilmIds: {
       handler: function (newLikedFilmIds) {
-        console.log(newLikedFilmIds)
+        // console.log(newLikedFilmIds)
         localStorage.likedFilmIds = newLikedFilmIds;
       },
       deep: true
+    },
+    pageCount(newPageCount) {
+      if(newPageCount <= 5){
+      this.pagePaginationCount = newPageCount;
+      } else {
+      this.pagePaginationCount = 5;
+      }
     }
-    // likedFilmIds(newLikedFilmIds) {
-    //   console.log(this.likedFilmIds);
-    //   localStorage.likedFilmIds = newLikedFilmIds;
-    // }
   }
 }
 </script>

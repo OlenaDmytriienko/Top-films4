@@ -296,7 +296,9 @@ h4 {
   color: black;
   border: 1px solid white;
   cursor: pointer;
-  background-color: white;
+  background-color: white;  
+  font-size: 16px;
+  height: 35px;
 }
 .loading{
   text-align: center;
@@ -465,3 +467,50 @@ h4 {
     margin: 0 auto;
 }
  }
+ :root {
+  --maincolor: #1a191f;
+  --secondarycolor:#fff;
+}
+
+.pagination {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  margin: 0 15px;
+  height: 35px;
+  width: 35px;
+  background: none;
+  border: 2px solid var(--secondarycolor);
+  color: var(--secondarycolor); 
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  cursor: pointer;
+  user-select: none;
+}
+.btn::before{
+  position: absolute;
+  content: "";
+  background: var(--secondarycolor);
+  height: 100%;
+  width: 100%;
+  transform: scale(0);
+  transition: all 500ms ease-in-out;
+  z-index: -1;
+}
+.btnhover{
+  color: var(--maincolor);
+}
+.btnhover::before{
+  transform: scale(1.1);
+}
