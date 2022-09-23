@@ -21,9 +21,9 @@ import img from '@/assets/cinema.png'
           <option value="YEAR">По году</option>
         </select>
         <select name="" id="genre" class="header__genre action" v-model="simbol" @change="onChange($event)">
-          <option value="1" @click="AP()">Tриллер</option>
-          <option value="2" @click="AP()">Драма</option>
-          <option value="3" @click="AP()">Криминал</option>
+          <option value="1" >Tриллер</option>
+          <option value="2" >Драма</option>
+          <option value="3">Криминал</option>
           <option value="4">Мелодрама</option>
           <option value="5">Детектив</option>
           <option value="6">Фантастика</option>
@@ -57,8 +57,8 @@ import img from '@/assets/cinema.png'
           <img class="loading" :src="gif" alt="loading">
            </span></div>
       <div class="movies" >
-        <div class="movie" v-for="(item, index) in restaurants" @click="Details(item.kinopoiskId )" v-bind:key="item.kinopoiskId"> 
-          <div class="movie__cover-inner" @click="Details(item.filmId )" >
+        <div class="movie" v-for="(item, index) in restaurants" v-bind:key="item.kinopoiskId ?? item.filmId"> 
+          <div class="movie__cover-inner" @click="Details(item.kinopoiskId ?? item.filmId)" >
             <img  :src="getMissingImg(index)" :alt="getMissingName(index)" class="movie__cover" />
             <div class="movie__cover--darkened"></div>
           </div>
@@ -71,10 +71,10 @@ import img from '@/assets/cinema.png'
                         <div v-if="item?.ratingKinopoisk >= 7"  class="movie__average movie__average--green"> {{item?.ratingKinopoisk}} </div>
             <div v-else-if="item?.ratingKinopoisk > 5"  class="movie__average movie__average--orange"> {{item?.ratingKinopoisk}} </div>
              <div v-else-if="item?.ratingKinopoisk <= 5"  class="movie__average movie__average--red"> {{item?.ratingKinopoisk}} </div>
-          <div><svg   v-show ="!likedFilmIds.includes(item.filmId)" @click="Like(item.filmId )"  class="movie__svg movie__svg--white" width="24" height="24" xmlns="http://www.w3.org/2000/svg"  >
-             <path v-show="!likedFilmIds.includes(item.filmId)" d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402m5.726-20.583c-2.203 0-4.446 1.042-5.726 3.238-1.285-2.206-3.522-3.248-5.719-3.248-3.183 0-6.281 2.187-6.281 6.191 0 4.661 5.571 9.429 12 15.809 6.43-6.38 12-11.148 12-15.809 0-4.011-3.095-6.181-6.274-6.181"/></svg>
-             <svg v-show="likedFilmIds.includes(item.filmId)" @click="disLike(item.filmId)" class="movie__svg movie__svg--red" width="24" height="24"  xml:space="preserve"> 
-              <path v-show="likedFilmIds.includes(item.filmId)" class="st0" d="M17.7,1c-2.2,0-4.4,1-5.7,3.2C10.7,2,8.5,1,6.3,1C3.1,1,0,3.2,0,7.2c0,4.7,5.6,9.4,12,15.8 c6.4-6.4,12-11.1,12-15.8C24,3.2,20.9,1,17.7,1z"/></svg>
+          <div><svg   v-show ="!likedFilmIds.includes(item.filmId ?? item.kinopoiskId)" @click="Like(item.filmId ?? item.kinopoiskId )"  class="movie__svg movie__svg--white" width="24" height="24" xmlns="http://www.w3.org/2000/svg"  >
+             <path v-show="!likedFilmIds.includes(item.filmId ?? item.kinopoiskId)" d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402m5.726-20.583c-2.203 0-4.446 1.042-5.726 3.238-1.285-2.206-3.522-3.248-5.719-3.248-3.183 0-6.281 2.187-6.281 6.191 0 4.661 5.571 9.429 12 15.809 6.43-6.38 12-11.148 12-15.809 0-4.011-3.095-6.181-6.274-6.181"/></svg>
+             <svg v-show="likedFilmIds.includes(item.filmId ?? item.kinopoiskId)" @click="disLike(item.filmId ?? item.kinopoiskId)" class="movie__svg movie__svg--red" width="24" height="24"  xml:space="preserve"> 
+              <path v-show="likedFilmIds.includes(item.filmId ?? item.kinopoiskId)" class="st0" d="M17.7,1c-2.2,0-4.4,1-5.7,3.2C10.7,2,8.5,1,6.3,1C3.1,1,0,3.2,0,7.2c0,4.7,5.6,9.4,12,15.8 c6.4-6.4,12-11.1,12-15.8C24,3.2,20.9,1,17.7,1z"/></svg>
              </div>
           </div>
         </div>
@@ -318,7 +318,8 @@ export default {
 },
             Like(filmId) {
             this.likedFilmIds.push(filmId);
-          //  console.log(filmId);
+            
+           console.log(filmId);
 },
             disLike(filmId) {
             this.likedFilmIds.splice(this.likedFilmIds.indexOf(filmId), 1);
@@ -370,7 +371,7 @@ console.log(Math.floor(Math.random() * (100 - 0 + 1)) + 1);
    watch: {
     likedFilmIds: {
       handler: function (newLikedFilmIds) {
-        // console.log(newLikedFilmIds)
+        console.log(newLikedFilmIds)
         localStorage.likedFilmIds = newLikedFilmIds;
       },
       deep: true
